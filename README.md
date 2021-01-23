@@ -1,2 +1,2 @@
-# fetch-abort-controller
-This is a basic example about AbortController
+# Abort Controller
+This is a basic example about AbortController implemented on image request

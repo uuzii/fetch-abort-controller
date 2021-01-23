@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Abort Controller</title>
+</head>
+<body>
+  <h1>Abort controller example</h1>
+  <img id="img" alt="huhe image">
+  <button id="startBtn">Load huge Image</button>
+  <button id="stopBtn" disabled>Stop load Image</button>
+  <script>
+    const url = "https://images.unsplash.com/photo-1611419010196-a360856fc42f?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=2040&q=120";
+    const img = document.getElementById('img')
+    const startButton = document.getElementById('startBtn')
+    const stopButton = document.getElementById('stopBtn')
+    let controller
+    function startLoading() {
+      startButton.disabled = true
+      startButton.innerHTML = 'Loading...'
+      stopButton.disabled = false
+    }
+    function stopLoading() {
+      startButton.disabled = false
+      startButton.innerHTML = 'Load huge Image'
+      stopButton.disabled = true
+    }
+    startButton.onclick = async function() {
+      startLoading()
+      // intanciamos AbortController
+      controller = new AbortController()
+        try {
+          // pasamos la señal del controller
+        const response = await fetch(url, {signal: controller.signal})
+        // extraemos el archivo binario de la respuesta
+        const blob = await response.blob()
+        // generamos una url para colocar al elemento img
+        const imgUrl = URL.createObjectURL(blob)
+        img.src = imgUrl
+      } catch(error) {
+        console.error(error.message)
+      }
+      stopLoading()
+    }
+    stopButton.onclick = async function() {
+      // abortamos el fetch
+      controller.abort()
+      stopLoading()
+    }
+  </script>
+</body>
+</html>
